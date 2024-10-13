@@ -12,42 +12,11 @@ from . import emails, utils
 from .forms import LoginForm, PasswordChangeForm, PasswordResetForm, RegisterForm
 from .models import Employee
 
+# from django.utils.text import slugify
+# from django.utils.decorators import method_decorator
+# from django.contrib.auth.decorators import login_required
+
 User = get_user_model()
-
-
-class PasswordChangeView(View):
-    """View for render password change from and handle it post data"""
-
-    form_class = PasswordChangeForm
-    template_name = "accounts/password-change.html"
-
-    def get(self, request, *args, **kwargs):
-        """render password change form"""
-        form = self.form_class()
-        return render(request, self.template_name, {"form": form})
-
-    def post(self, request, *args, **kwargs):
-        """handle POST request for password change password"""
-        form = self.form_class(request.POST)
-
-        if form.is_valid():
-            try:
-                user = User.objects.get(id=request.POST.get("uidb64"), otp=request.POST.get("otp"))
-                user.set_password(form.cleaned_data.get("new_password"))
-                user.otp = ""
-                user.reset_token = ""
-                user.save()
-                messages.success(request, "Palavra-passe alterada com sucesso!")
-                return redirect("accounts:login")
-            except User.DoesNotExist:
-                messages.error(request, "Usuário não encontrado!")
-        else:
-            messages.error(request, "Error validando o formulário!")
-        previous_page = request.META.get("HTTP_REFERER")
-        return HttpResponseRedirect(previous_page or "")
-
-
-password_change = PasswordChangeView.as_view()
 
 
 class PasswordResetEmailVerifyView(View):
@@ -168,6 +137,7 @@ class LoginView(View):
 login = LoginView.as_view()
 
 
+# @method_decorator(login_required(login_url="/accounts/login", redirect_field_name="next"), name="dispatch")
 class LogoutView(View):
     """logout view"""
 
@@ -194,3 +164,33 @@ class LogoutView(View):
 
 
 logout = LogoutView.as_view()
+
+
+class PasswordChangeView(View):
+    """View for render password change from and handle it post data"""
+
+    form_class = PasswordChangeForm
+    template_name = "accounts/password-change.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = User.objects.get(id=request.GET.get("uidb64"), otp=request.GET.get("otp"))
+            if user:
+                user.set_password(form.cleaned_data.get("new_password"))
+                user.otp = ""
+                user.reset_token = ""
+                user.save()
+                messages.success(request, "Palavra-passe alterada com sucesso!")
+                return redirect("accounts:login")
+        else:
+            messages.error(request, "Error validando o formulário!")
+        previous_page = request.META.get("HTTP_REFERER")
+        return HttpResponseRedirect(previous_page or "")
+
+
+password_change = PasswordChangeView.as_view()
