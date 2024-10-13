@@ -28,12 +28,12 @@
 		<div class="navbar-nav w-100">
 			{% if request.user.is_superuser %}
 			<div class="nav-item dropdown">
-				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'users_manage' %}active{% endif %}" data-bs-toggle="dropdown">
+				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'accounts_manage' %}active{% endif %}" data-bs-toggle="dropdown">
 					<i class="bi bi-people-fill me-1"></i>
 					Gerir Usuários
 				</a>
 				<div class="dropdown-menu bg-transparent border-0">
-					<a href="{% url 'accounts:register' %}" class="dropdown-item {% if sub_page == 'user_register' %}active{% endif %}" >Cadastrar Usuário</a>
+					<a href="{% url 'accounts:register' %}" class="dropdown-item {% if sub_page == 'accounts_register' %}active{% endif %}" >Cadastrar Usuário</a>
 					<a href="" class="dropdown-item {% if sub_page == 'user_list' %}active{% endif %}">Listar Usuários</a>
 					<a href="" class="dropdown-item {% if sub_page == 'user_dashboard' %}active{% endif %}">Dashboad Usuários</a>
 				</div>

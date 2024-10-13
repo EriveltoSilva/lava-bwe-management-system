@@ -104,7 +104,9 @@ class RegisterView(View):
     def get(self, request, *args, **kwargs):
         """get template for register"""
         form = self.form_class(request.session.get("register_form_data", None))
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request, self.template_name, {"form": form, "menu_page": "accounts_manage", "sub_page": "accounts_register"}
+        )
 
     def post(self, request, *args, **kwargs):
         """register post data"""
