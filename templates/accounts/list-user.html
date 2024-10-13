@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Usuários do Sistema{% endblock %}
+{% block local_style %}{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="col-12 col-md-7 col-xl-7">
+        {% include 'partials/_alerts.html' %}
+    </div>
+    <div class="bg-secondary rounded h-100 p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4 border-bottom">
+            <h3 class="mb-0">Lista de Usuários</h3>
+                <a href="{% url 'register-user' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    Novo Usuário
+                </a>
+        </div>
+        <div class="row g-4">
+            {% for user in users %}
+            <div class="col-12 col-sm-5 col-md-5 col-lg-4 col-xl-3 text-center border py-3 border-light m-2">
+                <img onmouseenter='showModal("modalUser{{user.id}}")' class="img-fluid rounded-circle mx-auto mb-4" 
+                {% if user.employee.image %} 
+                    src="{{ user.employee.image.url }}" 
+                {% else %}
+                    src="{% static 'assets/geral/img/user.png' %}" 
+                {% endif %} 
+                style="width: 100px; height: 100px;">
+                <h5>{{user.get_full_name}}</h5>
+                <p>{{user.employee.area}}</p>
+                <p> 
+                    <a title="Editar" href="{% url 'edit-user' user.id %}" class="btn btn-primary  text-white">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a title="Ver Detalhes" href="{% url 'read-user' user.id %}" class="btn btn-primary text-white">
+                        <i class="bi bi-eye-fill"></i>
+                    </a>
+                </p>
+
+                {% include 'users/partials/modal-user-details.html' %}
+            </div>
+            {% empty %}
+                    <tr>
+                        <td colspan=5>
+                            <p>Não há Usuários registradas</p>
+                        </td>
+                    </tr>
+            {% endfor %}
+
+        </div>
+        <div class="clearfix">
+            <div class="hint-text text-center">
+                Mostrando <b>
+                    {{users.number }}</b> de <b>
+                    {{ users.paginator.num_pages}}
+
+                </b>
+            </div>
+            <ul class="pagination d-flex justify-content-center">
+                {% if users.has_previous %}
+                <li class="page-item "><a href="?page={{ users.previous_page_number }}"
+                        class="page-link">Anterior</a></li>
+                {% endif %}
+
+                {% for num_page in users.paginator.page_range %}
+
+                <li class="page-item {% if num_page == users.number %}active{% endif %}">
+                    <a href="?page={{ num_page }}" class="page-link">{{ num_page }}</a>
+                </li>
+                {% endfor %}
+
+                {% if users.has_next %}
+                <li class="page-item ">
+                    <a href="?page={{ users.next_page_number }}" class="page-link">
+                        Próximo
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="?page={{ users.paginator.num_pages }}" class="page-link">Última &raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block local_script %}
+<script src="{% static 'assets/users/js/list-users.js' %}"></script>
+{% endblock%}

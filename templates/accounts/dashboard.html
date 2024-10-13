@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metas %}
+{% endblock %}
+
+{% block title %}Dashboard de Usuários{% endblock %}
+
+
+{% block local_style %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <h1>Dados dos Usuários</h1>
+        <div class="col-12">
+            {% include 'partials/_alerts.html' %}
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total de Usuários</p>
+                    <h6 class="mb-0">{{total_users}}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total de Admins</p>
+                    <h6 class="mb-0">{{total_admis}}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total de Gestores</p>
+                    <h6 class="mb-0">{{total_managers}}</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <a href="{% url 'read-user' older_user.id %}">
+                    {% if older_user.employee.image %}
+                    <img class="rounded-circle" src="{{ older_user.employee.image.url }}" alt=""
+                        style="width: 50px; height: 50px;">
+                    {% else %}
+                    <img class="rounded-circle" src="{% static 'assets/geral/img/user.png' %}" alt=""
+                        style="width: 50px; height: 50px;">
+                    {% endif %}
+                </a>
+                <div class="ms-3">
+                    <p class="mb-2">Usuário mais Antigo</p>
+                    <h6 class="mb-0">
+                        <a href="{% url 'read-user' older_user.id %}">{{older_user.get_full_name}}</a>
+                    </h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <a href="{% url 'read-user' newer_user.id %}">
+                    {% if newer_user.employee.image %}
+                    <img class="rounded-circle" src="{{ newer_user.employee.image.url }}" alt=""
+                        style="width: 50px; height: 50px;">
+                    {% else %}
+                    <img class="rounded-circle" src="{% static 'assets/geral/img/user.png' %}" alt=""
+                        style="width: 50px; height: 50px;">
+                    {% endif %}
+                </a>
+                <div class="ms-3">
+                    <p class="mb-2">Usuário mais Recente</p>
+                    <a href="{% url 'read-user' newer_user.id %}">{{newer_user.get_full_name}}</a></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Distribuições de Funcionários por Gênero</h6>
+                <canvas id="user-distribuition-gender-pie"></canvas>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Distribuições de Funcionários por Área</h6>
+                <canvas id="user-distribuition-area-pie"></canvas>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Evolução do Número de Funcionários ao Longo do Tempo</h6>
+                <canvas id="user_increase_time_line"></canvas>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Distruibuição de Funcionários por Gerente</h6>
+                <canvas id="user_by_manager_bar"></canvas>
+            </div>
+        </div>
+        
+        <div class="col-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Distruibuição de Aniversários por Meses</h6>
+                <canvas id="user_birthday_by_month_bar"></canvas>
+            </div>
+        </div>
+        
+        <!-- <div class="col-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Tempo de Permanência na Empresa</h6>
+                <canvas id="user_average_tenure"></canvas>
+            </div>
+        </div> -->
+
+    </div>
+</div>
+<!-- Chart End -->
+
+
+{% endblock %}
+
+{% block local_script %}
+<script>
+    window.addEventListener("load", () => {
+        // Chart Global Color
+        Chart.defaults.color = "#6C7293";
+        Chart.defaults.borderColor = "#000000";
+
+        var user_gender_pie = document.getElementById('user-distribuition-gender-pie').getContext("2d");
+        var myGender = new Chart(user_gender_pie, {
+            type: "pie",
+            data: {
+                labels: {{ labels_user_distribuition_gender_pie | safe }},
+        datasets: [{
+            backgroundColor: [
+                "rgb(13, 202, 240)",
+                "rgb(254, 130, 151)",
+            ],
+            data: {{ data_user_distribuition_gender_pie | safe }},
+                }]
+            },
+        options: {
+        responsive: true
+    }
+        });
+
+
+    var user_area_pie = document.getElementById('user-distribuition-area-pie').getContext("2d");
+    var myArea = new Chart(user_area_pie, {
+        type: "pie",
+        data: {
+            labels: {{ labels_user_distribuition_area_pie | safe }},
+    datasets: [{
+        backgroundColor: [
+            "rgb(13, 202, 240)",
+            "rgb(254, 130, 151)",
+            "rgb(255, 193, 7)",
+            "rgb(228, 79, 38)",
+            "rgb(123, 131, 235)",
+            "rgb(75, 240, 123)",
+        ],
+        data: {{ data_user_distribuition_area_pie | safe }},
+                }]
+            },
+    options: {
+        responsive: true
+    }
+        });
+
+
+    var user_increase_line = document.getElementById('user_increase_time_line').getContext("2d");
+    var myIncreaseLine = new Chart(user_increase_line, {
+        type: "line",
+        data: {
+            labels: {{ labels_user_increase_time_line | safe }},
+            datasets: [{
+                label: "Número de funcionário cadastrados neste mês",
+                data: {{ data_user_increase_time_line | safe }},
+                backgroundColor: "rgb(27,123, 233)",
+                borderColor: 'blue',
+                borderWidth: 2,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+        }
+    });
+        
+     
+        var user_birthday_by_month_bar = document.getElementById('user_birthday_by_month_bar').getContext("2d");
+        var myuser_birthday_by_month_bar = new Chart(user_birthday_by_month_bar, {
+            type: "bar",
+            data: {
+                labels: {{ labels_user_birthday_by_month_bar|safe }},
+                datasets: [{
+                    label:'Nº de aniversários no mês',
+                    data: {{ data_user_birthday_by_month_bar|safe }},
+                    backgroundColor: [
+                        "rgb(27,123, 233)",
+                        "rgb(13, 202, 240)",
+                        "rgb(255, 193, 7)",
+                        "rgb(254, 130, 151)",
+                        "rgb(228, 79, 38)",
+                        "rgb(123, 131, 235)",
+                        "rgb(75, 240, 123)",
+                    ],
+                    borderColor: "#FFFFFF",
+                    borderWidth: 0.2,
+                }]
+            },
+        });
+
+
+        var user_by_manager_bar = document.getElementById('user_by_manager_bar').getContext("2d");
+        var myuser_by_manager_bar = new Chart(user_by_manager_bar, {
+            type: "bar",
+            data: {
+                labels: {{ labels_user_by_manager_bar|safe }},
+                datasets: [{
+                    label:'Nº de funcionários que gerência',
+                    data: {{ data_user_by_manager_bar|safe }},
+                    backgroundColor: [
+                        "rgb(27,123, 233)",
+                        "rgb(13, 202, 240)",
+                        "rgb(255, 193, 7)",
+                        "rgb(254, 130, 151)",
+                        "rgb(228, 79, 38)",
+                        "rgb(123, 131, 235)",
+                        "rgb(75, 240, 123)",
+                    ],
+                    borderColor: "#FFFFFF",
+                    borderWidth: 0.2,
+                }]
+            },
+        });
+
+
+        // var user_average_tenure = document.getElementById('user_average_tenure').getContext("2d");
+        // var myuser_average_tenure = new Chart(user_average_tenure, {
+        //     type: "bar",
+        //     data: {
+        //         labels: ['Tempo Médio de Permanência'],
+        //         datasets: [{
+        //             label:'Tempo Médio (em dias)',
+        //             data: [{{ average_tenure }}],
+        //             backgroundColor: [
+        //                 "rgb(27,123, 233)",
+        //                 "rgb(13, 202, 240)",
+        //                 "rgb(255, 193, 7)",
+        //                 "rgb(254, 130, 151)",
+        //                 "rgb(228, 79, 38)",
+        //                 "rgb(123, 131, 235)",
+        //                 "rgb(75, 240, 123)",
+        //             ],
+        //             borderColor: "#FFFFFF",
+        //             borderWidth: 0.2,
+        //         }]
+        //     },
+        // });
+
+
+        // var ctx4 = document.getElementById('valor-total-requisition').getContext("2d");
+        // var myChart4 = new Chart(ctx4, {
+        //     type: "line",
+        //     data: {
+        //         labels: {{labels_requisition_line_acum_char |safe }},
+        //         datasets: [{
+        //             label: "Acumulo",
+        //             data: {{ data_requisition_line_acum_char |safe }},
+        //             backgroundColor: "rgba(35, 75, 250, .7)",
+        //             fill: true
+        //         }
+        //         ]
+        //     },
+        //     options: {
+        //         responsive: true
+        //     }
+        // });
+
+
+
+        // var ctx1 = $("#worldwide-sales").get(0).getContext("2d");
+        // var myChart1 = new Chart(ctx1, {
+        //     type: "bar",
+        //     data: {
+        //         labels: ["2016", "2017", "2018", "2019", "2020", "2021", "2022"],
+        //         datasets: [{
+        //             label: "USA",
+        //             data: [15, 30, 55, 65, 60, 80, 95],
+        //             backgroundColor: "rgba(235, 22, 22, .7)"
+        //         },
+        //         {
+        //             label: "UK",
+        //             data: [8, 35, 40, 60, 70, 55, 75],
+        //             backgroundColor: "rgba(235, 22, 22, .5)"
+        //         },
+        //         {
+        //             label: "AU",
+        //             data: [12, 25, 45, 55, 65, 70, 60],
+        //             backgroundColor: "rgba(235, 22, 22, .3)"
+        //         }
+        //         ]
+        //     },
+        //     options: {
+        //         responsive: true
+        //     }
+        // });
+
+        // var ctx6 = document.getElementById('doughnut-chart').getContext("2d");
+        // var myChart6 = new Chart(ctx6, {
+        //     type: "doughnut",
+        //     data: {
+        //         labels: ["Italy", "France", "Spain", "USA", "Argentina"],
+        //         datasets: [{
+        //             backgroundColor: [
+        //                 "rgba(235, 22, 22, .7)",
+        //                 "rgba(235, 22, 22, .6)",
+        //                 "rgba(235, 22, 22, .5)",
+        //                 "rgba(235, 22, 22, .4)",
+        //                 "rgba(235, 22, 22, .3)"
+        //             ],
+        //             data: [55, 49, 44, 24, 15]
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true
+        //     }
+        // });
+
+    });
+
+
+</script>
+{% endblock%}

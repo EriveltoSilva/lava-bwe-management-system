@@ -1,0 +1,79 @@
+{% load static %}
+<!-- Sidebar Start -->
+<div class="sidebar pe-4 pb-3">
+	<nav class="navbar bg-secondary navbar-dark">
+		<a href="" class="navbar-brand mx-4 mb-3">
+			<h3 class="text-primary">
+				<img class="rounded-circle" src="{% static 'assets/geral/img/logo.png' %}" alt="Logo LavaBwé" style="width: 40px; height: 40px;">
+				LavaBwé
+			</h3>
+		</a>
+		<div class="d-flex align-items-center ms-4 mb-4">
+			<div class="position-relative">
+				{% if request.user.employee.image %}
+				<img class="rounded-circle" src="{{ request.user.employee.image_url }}" alt="" style="width: 40px; height: 40px;">
+				{% else %}
+				<img class="rounded-circle" src="{% static 'assets/geral/img/user.png' %}" alt="" style="width: 40px; height: 40px;">
+				{% endif %}
+				<div
+					class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+				</div>
+			</div>
+			<div class="ms-3">
+				<h6 class="mb-0">{{ request.user.get_full_name}}</h6>
+				<span>{{ request.user.employee.area}}</span>
+			</div>
+		</div>
+
+		<div class="navbar-nav w-100">
+			{% if request.user.is_superuser %}
+			<div class="nav-item dropdown">
+				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'users_manage' %}active{% endif %}" data-bs-toggle="dropdown">
+					<i class="bi bi-people-fill me-1"></i>
+					Gerir Usuários
+				</a>
+				<div class="dropdown-menu bg-transparent border-0">
+					<a href="{% url 'accounts:register' %}" class="dropdown-item {% if sub_page == 'user_register' %}active{% endif %}" >Cadastrar Usuário</a>
+					<a href="" class="dropdown-item {% if sub_page == 'user_list' %}active{% endif %}">Listar Usuários</a>
+					<a href="" class="dropdown-item {% if sub_page == 'user_dashboard' %}active{% endif %}">Dashboad Usuários</a>
+				</div>
+			</div>
+			{% endif %}
+
+			{% comment %}
+			{% if request.user.employee.area.name == 'IT' or request.user.is_superuser %}
+			<div class="nav-item dropdown">
+				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'it_material_req' %}active{% endif %}" data-bs-toggle="dropdown">
+					<i class="bi bi-stickies-fill"></i>
+					Requisições
+				</a>
+				<div class="dropdown-menu bg-transparent border-0">
+					<a href="{% url 'create-material-req' %}" class="dropdown-item {% if sub_page == 'create_material_req' %}active{% endif %}">Solicitar Material</a>
+					<a href="{% url 'list-material-req' %}" class="dropdown-item {% if sub_page == 'list_material_req' %}active{% endif %}">Lista Solicitações de Materias</a>
+					<a href="{% url 'dashboard-material-req' %}" class="nav-item nav-link {% if menu_page == 'dashboard_material_req' %}active{% endif %}">Dashboard</a>
+				</div>
+			</div>
+			{% endif %}
+			{% endcomment %}
+
+			<div class="nav-item dropdown">
+				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'room_reservation' %}active{% endif %}" data-bs-toggle="dropdown">
+					<i class="bi bi-door-open me-1"></i>
+					Gerir de Máquinas
+				</a>
+				<div class="dropdown-menu bg-transparent border-0">
+					{% if request.user.is_superuser %}
+					<a href="" class="dropdown-item {% if sub_page == 'room_list' %}active{% endif %}">Listar Salas</a>
+					<a href="" class="dropdown-item {% if sub_page == 'room_register' %}active{% endif %}">Registrar Sala</a>
+					<hr>
+					{% endif %}
+					<a href="" class="dropdown-item {% if sub_page == 'reservation_list' %}active{% endif %}">Listar Reservas</a>
+					<a href="" class="dropdown-item {% if sub_page == 'reservation_register' %}active{% endif %}" >Reservar Sala</a>
+					<a href="" class="dropdown-item {% if sub_page == 'reservation_dashboard' %}active{% endif %}">Dashboad Estatistica</a>
+				</div>
+			</div>
+
+		</div>
+	</nav>
+</div>
+<!-- Sidebar End -->

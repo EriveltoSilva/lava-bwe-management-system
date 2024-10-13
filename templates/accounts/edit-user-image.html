@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Edição de Imagem de Usuário{% endblock %}
+
+{% block local_style %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Blank Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row vh-100 bg-secondary rounded align-items-center justify-content-center mx-0">
+        <div class="col-md-6 text-center">
+            <h1>Carregue uma nova Imagem</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div>
+                    <!-- <label for="formFileLg" class="form-label">Carregue uma nova Imagem...</label> -->
+                    <input class="form-control form-control-lg bg-dark" id="formFileLg" type="file" name="user_image">
+                </div>
+                <button type="submit" class="btn btn-primary mt-5">
+                    <i class="bi bi-cloud-upload"></i>
+                    Actualiar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Blank End -->
+{% endblock %}
+
+{% block local_script %} {% endblock%}

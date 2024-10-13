@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metas%}
+
+{% endblock %}
+
+
+{% block title %} 
+Edição de Perfil
+{% endblock %}
+
+{% block local_style %}
+{% endblock %}
+
+{% block content %}
+        <!-- Sign Up Start -->
+        <div class="container-fluid row align-items-center justify-content-center">
+            <div class="row w-75 h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+                <div class="col-12">
+                    <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            
+                                <h3 class="text-primary">
+									{% if user.employee.image %}
+									<img class="rounded-circle" src="{{ user.employee.image.url }}" alt="" style="width: 50px; height: 50px;">
+									{% else %}
+									<img class="rounded-circle" src="{% static 'assets/geral/img/user.png' %}" alt="" style="width: 50px; height: 50px;">
+									{% endif %}
+										{{user.get_full_name}}
+                                </h3>
+                        
+                            <h2>Detalhes de Perfil</h2>
+                        </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-floating mt-3">
+                                {% include 'partials/_alerts.html' %}
+                            </div>
+
+							<div class="row">
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="first_name" class="form-control" id="floatingInputFirstName"
+										placeholder="Primeiro Nome"  value="{{user.first_name}}" readonly>
+										<label for="floatingInputFirstName">Primeiro Nome</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="last_name" class="form-control" id="floatingInputLastName"
+											placeholder="Sobrenome"  value="{{user.last_name}}" readonly>
+										<label for="floatingInputLastName">Sobrenome</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="gender" class="form-control" id="floatingInputgender"
+											placeholder="gender"  value="{{user.employee.gender}}"  readonly>
+										<label for="floatingInputgender">Gênero</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="birthday" class="form-control" id="floatingInputbBrthday"
+											value="{{ user.employee.birthday }}" name="birthday" readonly>
+										<label for="floatingInputBirthday">Data de Nascimento</label>
+									</div>
+								</div>
+								
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="start_date" class="form-control" id="floatingInputbBrthday"
+											value="{{ user.employee.start_date }}" name="start_date" readonly>
+										<label for="floatingInputstart_date">Inicio na Empresa</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="username" class="form-control" id="floatingInputUsername"
+											placeholder="Username"  value="{{user.username}}"  readonly>
+										<label for="floatingInputUsername">Username</label>
+									</div>
+								</div>
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="email" name="email" class="form-control" id="floatingInputEmail"
+										placeholder="name@example.com" value="{{user.email}}" readonly>
+										<label for="floatingInputEmail">Email </label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="email" name="email" class="form-control" id="floatingInputEmail"
+										value="{% if user.employee.is_manager %} SIM{% else %}Não{% endif%}" readonly>
+										<label for="floatingInputEmail">Gestor </label>
+									</div>
+								</div>
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="email" name="email" class="form-control" id="floatingInputEmail"
+										value="{% if user.is_superuser %} SIM{% else %} Não{% endif%}" readonly>
+										<label for="floatingInputEmail">Admin </label>
+									</div>
+								</div>
+
+								
+								
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="created_by" class="form-control" id="floatingInputCreated_by"
+											value="{{user.employee.created_by.get_full_name}}" name="created_by" readonly>
+										<label for="floatingInputCreated_by">Criado por</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="created_at" class="form-control" id="floatingInputCreated_at"
+											value="{{user.date_joined}}" name="created_at" readonly>
+										<label for="floatingInputCreated_at">Registrado em</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-sm-12 col-md-6">
+									<div class="form-floating mb-3">
+										<input type="text" name="created_by" class="form-control" id="floatingInputUpdated_by"
+											value="{{user.employee.updated_by.get_full_name}}" name="updated_by" readonly>
+										<label for="floatingInputUpdated_by">Actualizado por</label>
+									</div>
+								</div>
+							</div>
+                            <a href="{% url 'edit-user' user.id %}" class="btn btn-primary py-3 w-100 my-4">Ir para edição</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Sign Up End -->
+
+{% endblock %}
+
+{% block local_script %}
+{% endblock%}

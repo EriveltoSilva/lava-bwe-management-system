@@ -1,0 +1,60 @@
+<div class="modal fade" id="modalUser{{user.id}}" tabindex="-1"
+                    aria-labelledby="modalUser{{user.id}}Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-secondary">
+
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <div class="row text-start">
+                                        <div class="col-4">Nome:</div>
+                                        <div class="col-8">{{user.get_full_name}}</div>
+                                    </div>
+
+                                    <div class="row text-start">
+                                        <div class="col-4">Username:</div>
+                                        <div class="col-8">{{user.username}}</div>
+                                    </div>
+
+                                    <div class="row text-start">
+                                        <div class="col-4">Estado:</div>
+                                        <div class="col-8">
+                                            {% if user.is_active %}
+                                            <span class="badge rounded-pill bg-success">Activo</span>
+                                            {% else %}
+                                            <span class="badge rounded-pill bg-danger">Deletado</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="row text-start">
+                                        <div class="col-4">Gerente:</div>
+                                        <div class="col-8">
+                                            {% if user.employee.is_manager %}
+                                            <span class="badge rounded-pill bg-success">Sim</span>
+                                            {% else %}
+                                            <span class="badge rounded-pill bg-danger">Não</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="row text-start">
+                                        <div class="col-4">Admin:</div>
+                                        <div class="col-8">
+                                            {% if user.is_superuser %}
+                                            <span class="badge rounded-pill bg-success">Sim</span>
+                                            {% else %}
+                                            <span class="badge rounded-pill bg-danger">Não</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="row text-start">
+                                        <div class="col-4">Data de Criação:</div>
+                                        <div class="col-8">{{user.date_joined}}</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

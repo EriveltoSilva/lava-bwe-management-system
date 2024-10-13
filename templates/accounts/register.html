@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metas%}
+<meta content="Registro" name="keywords">
+<meta content="Página de Registro do LavaBwé" name="description">
+{% endblock %}
+
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block local_style %}
+{% endblock %}
+
+{% block content %}
+<!-- Sign Up Start -->
+<div class="container-fluid row align-items-center justify-content-center">
+    <div class="row w-75 h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <a href="index.html">
+                        <h3 class="text-primary">
+                            <img class="rounded-circle" src="{% static 'assets/geral/img/logo.png' %}" alt=""
+                                style="width: 40px; height: 40px;">
+                            LavaBwé
+                        </h3>
+                    </a>
+                    <h1>Registrar Usuário</h1>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-floating mt-3">
+                        {% include 'partials/_alerts.html' %}
+                    </div>
+
+                    <div class="row">
+                        {% for field in form.visible_fields %}
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}"> {{ field.label }}</label>
+                            </div>
+                            <div class="w-100">
+                                {% for error in field.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary py-3 w-100 my-4">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sign Up End -->
+
+{% endblock %}
+
+{% block local_script %}
+{% endblock%}
+
+
+

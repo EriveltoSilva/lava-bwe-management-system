@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-ao">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="InovAI Soluções(Erivelto Silva, Jaceline Filipe, Margarida Baltazar)">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    {% block metas %}
+
+    {% endblock %}
+    <title>LavaBwé | {% block title %} {% endblock%}</title>
+
+    <link rel="shortcut icon" href="{% static 'assets/geral/img/atis.png' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'assets/geral/img/atis.png' %}" sizes="180x180">
+    <link rel="icon" href="{% static 'assets/geral/img/atis.png' %}" sizes="32x32" type="image/png">
+    <link rel="icon" href="{% static 'assets/geral/img/atis.png' %}" sizes="16x16" type="image/png">
+
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
+    rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/owlcarousel/assets/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+    <!-- Template Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/geral/css/style.css' %}">
+    {% block local_style %} {% endblock %}
+</head>
+
+<body>
+    <div class="container-fluid position-relative d-flex p-0">
+
+        <!-- Spinner Start -->
+        <!-- <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div> -->
+        <!-- Spinner End -->
+        {% include 'partials/_sidebar.html' %}
+
+        <main class="content">
+            {% include 'partials/_navbar.html' %}
+
+            {% block content %} {% endblock%}
+
+            {% include 'partials/_footer.html' %}
+        </main>
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{% static 'assets/vendor/chart/chart.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/easing/easing.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/select2/js/select2-4.1.0.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'assets/geral/js/main.js' %}"></script>
+    <script src="{% static 'assets/geral/js/page-setup.js' %}"></script>
+
+    {% block local_script %} {% endblock %}
+
+</body>
+
+</html>

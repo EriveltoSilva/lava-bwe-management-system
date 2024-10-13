@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metas%}
+
+{% endblock %}
+
+
+{% block title %}
+Edição de Perfil
+{% endblock %}
+
+{% block local_style %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid row align-items-center justify-content-center">
+	<div class="row w-75 h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+		<div class="col-12">
+			<div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+				<div class="d-flex align-items-center justify-content-between mb-3">
+					<h3 class="text-primary">
+						<a href="{% url 'edit-user-image' user.id %}">
+							{% if user.employee.image %}
+							<img class="rounded-circle" src="{{ user.employee.image.url }}" alt=""
+							style="width: 50px; height: 50px;">
+							{% else %}
+							<img class="rounded-circle" src="{% static 'assets/geral/img/user.png' %}" alt=""
+							style="width: 50px; height: 50px;">
+							{% endif %}
+						</a>
+						{{user.get_full_name}}
+					</h3>
+					<h2>Edição de Perfil</h2>
+				</div>
+				<form method="post">
+					{% csrf_token %}
+					<div class="form-floating mt-3">
+						{% include 'partials/_alerts.html' %}
+					</div>
+
+					<div class="row">
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="text" name="first_name" class="form-control" id="floatingInputFirstName"
+									placeholder="Primeiro Nome" value="{{user.first_name}}">
+								<label for="floatingInputFirstName">Primeiro Nome</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="text" name="last_name" class="form-control" id="floatingInputLastName"
+									placeholder="Sobrenome" value="{{user.last_name}}">
+								<label for="floatingInputLastName">Sobrenome</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<select name="gender" class="form-select" id="floatingInputgender" readonly>
+									{% for choice in user.employee.get_gender %}
+									<option value="{{ choice.0 }}" 
+									{% if choice.0 == user.employee.gender %} 
+										selected 
+									{% endif %}>
+										{{ choice.1 }}
+									</option>
+									{% endfor %}
+								</select>
+								<label for="floatingInputgender">Gênero</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="date" name="birthday" class="form-control" id="floatingInputbBrthday"
+									value="{{ user.employee.birthday|date:'Y-m-d' }}" name="birthday">
+								<label for="floatingInputBirthday">Data de Nascimento</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="date" name="start_date" class="form-control" id="floatingInputbBrthday"
+									value="{{ user.employee.start_date|date:'Y-m-d' }}" name="start_date">
+								<label for="floatingInputstart_date">Inicio na Empresa</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="text" name="username" class="form-control" id="floatingInputUsername"
+									placeholder="Username" value="{{user.username}}" readonly>
+								<label for="floatingInputUsername">Username</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="email" name="email" class="form-control" id="floatingInputEmail"
+									placeholder="name@example.com" value="{{user.email}}" readonly>
+								<label for="floatingInputEmail">Email </label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="password" name="password" class="form-control" id="floatingInputPassword"
+									placeholder="********" value="">
+								<label for="floatingInputPassword">Senha</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<select name="area" class="form-select" id="floatingInputArea" readonly>
+									{% for area in areas %}
+									<option value="{{ area.pk }}" 
+									{% if area.pk == user.employee.area.pk %} 
+										selected 
+									{% endif %}>
+										{{ area.name }}
+									</option>
+									{% endfor %}
+								</select>
+								<label for="floatingInputArea">Área</label>
+							</div>
+						</div>
+
+						<div class="col-12 col-sm-12 col-md-6">
+							<div class="form-floating mb-3">
+								<input type="password" name="password_confirmation" class="form-control"
+									id="floatingInputPasswordConfirmation" placeholder="********" value="">
+								<label for="floatingInputPasswordConfirmation">Senha de Confirmação </label>
+							</div>
+						</div>
+
+
+
+						{% if request.user.is_superuser or request.user.employee.is_manager %}
+						<div class="col-12 col-sm-12 col-md-6">
+							<label for="floatingInputIsGestor">Gestor</label>
+							<input type="checkbox" name="is_manager" class="form-check-input" id="floatingInputIsGestor"
+								{% if user.employee.is_manager %}checked {%endif%}>
+						</div>
+						<div class="col-12 col-sm-12 col-md-6">
+							<label for="floatingInputAdmin">Admin</label>
+							<input type="checkbox" name="is_superuser" class="form-check-input" id="floatingInputAdmin"
+								{% if user.is_superuser %}checked {%endif%}>
+						</div>
+						{% endif %}
+					</div>
+					<button type="button" class="btn btn-danger py-3 w-45 my-4" data-bs-toggle="modal"
+						data-bs-target="#modalDeletar">
+						<i class="bi bi-trash-fill"></i>
+						Deletar
+					</button>
+					<button type="submit" class="btn btn-primary py-3 w-45 my-4">
+						<i class="bi bi-pencil-square"></i>
+						Salvar alteração
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalDeletar" tabindex="-1" aria-labelledby="modalDeletarLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title text-secondary" id="modalDeletarLabel">Delete de Usuário</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <p>Deseja mesmo apagar este usuário</p>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+		  <a href="{% url 'delete-user' user.id %}" class="btn btn-success">Sim</a>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+
+{% endblock %}
+
+{% block local_script %}
+{% endblock%}

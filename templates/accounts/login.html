@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-ao">
+
+<head>
+    <meta charset="utf-8">
+    <title>LavaBwe | Login</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Login, Entrar" name="keywords">
+    <meta content="Página de Login da LavaBwé" name="description">
+    <meta name="author" content="Erivelto Silva">
+
+    <!-- Favicon -->
+    <link href="{% static 'assets/geral/img/atis.png' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"> -->
+    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/owlcarousel/assets/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+
+    <!-- Template Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/geral/css/style.css' %}">
+</head>
+
+<body>
+    <div class="container-fluid position-relative d-flex p-0">
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+
+        <!-- Sign In Start -->
+        <div class="container-fluid">
+            <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                    <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <a href="index.html">
+                                <h3 class="text-primary">
+                                    <img class="rounded-circle" src="{% static 'assets/geral/img/atis.png' %}" alt="" style="width: 40px; height: 40px;">
+                                    LavaBwé
+                                </h3>
+                            </a>
+                            <h3>Login</h3>
+                        </div>
+                        <form action="{% url 'accounts:login' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-floating mt-3">
+                                {% include 'partials/_alerts.html' %}
+                            </div>
+
+                            {% for field in form.visible_fields %}
+                            <div class="form-floating mt-3">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}"> {{ field.label }}</label>
+                            </div>
+                            {% endfor %}
+
+
+                            {% comment %}
+                            <!-- <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                                </div>
+                                <a href="#">Forgot Password</a>
+                            </div> -->
+                            {% endcomment %}
+                            <button type="submit" class="btn btn-primary py-3 w-100 my-4">Entrar</button>
+                            {% comment %}
+                            <p class="text-center mb-0">Não tem uma conta?
+                                <a href="{% url 'register' %}">Registre-se aqui</a>
+                            </p>
+                            {% endcomment %}
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Sign In End -->
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{% static 'assets/vendor/chart/chart.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/easing/easing.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'assets/geral/js/main.js' %}"></script>
+    {% block local_script %} {% endblock %}
+</body>
+
+</html>
