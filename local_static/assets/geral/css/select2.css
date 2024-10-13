@@ -1,0 +1,13 @@
+.select2-container--default .select2-selection--multiple {
+    background-color: #000 !important;
+    border: 1px solid #DC3545;
+    height: 1.5;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--text-primary);
+    color: var(--text-light);
+}
+textarea.select2-search__field{
+    color: #6C7293 !important;
+}

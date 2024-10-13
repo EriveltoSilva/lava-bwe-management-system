@@ -1,0 +1,45 @@
+.my-search-box{
+    position: relative;
+}
+
+
+.my-search-box .icon{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 20px;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+.my-search-box .my-content-box{
+    max-height: 280px !important;
+    overflow-y: auto !important;
+}
+
+/* .my-search-box.active .autocom-box{
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+} */
+
+
+/* .autocom-box li{
+    list-style: none;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+    display: none;
+}
+
+.my-search-box.active .autocom-box li{
+    display: block;
+}
+
+.autocom-box li:hover{
+    cursor: pointer;
+    background-color: var(--text-light) !important;
+} */
