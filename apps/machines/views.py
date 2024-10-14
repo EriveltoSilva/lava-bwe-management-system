@@ -6,6 +6,40 @@ from django.shortcuts import render
 from django.views import View
 
 from .forms import MachineForm
+from .models import Machine
+
+
+class EditMachineView(View):
+    """View for edit machines"""
+
+    template_name = "machines/edit.html"
+    form_class = MachineForm
+
+    def get(self, request, *args, **kwargs):
+        """edit a machine"""
+        slug = self.request.kwargs.get("slug")
+        machine = Machine.objects.get(slug=slug)
+        form = self.form_class(data=request.session.get("machine_form_data", None), instance=machine)
+        return render(request, self.template_name, {"form": form, "menu_page": "machines", "sub_page": "edit"})
+
+    def post(self, request, *args, **kwargs):
+        """edit a machine post data"""
+        slug = self.kwargs.get("slug")
+        machine = Machine.objects.get(slug=slug)
+        request.session["machine_form_data"] = request.POST
+        form = self.form_class(data=request.POST, instance=machine)
+
+        if form.is_valid():
+            machine = form.save(commit=False)
+            machine.save()
+            messages.success(request, "Máquina editada com sucesso!")
+            del request.session["machine_form_data"]
+        else:
+            messages.error(request, "Erro ao editar a máquina!")
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER") or "")
+
+
+edit = EditMachineView.as_view()
 
 
 class RegisterMachinesView(View):
