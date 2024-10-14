@@ -41,7 +41,7 @@
                             </span>
                             {% endcomment %}
 
-                            <a title="Editar" href="" class="btn btn-primary mt-1" id="{{machine.slug}}">
+                            <a title="Editar" href="{% url 'machines:edit-state' state.mid %}" class="btn btn-primary mt-1" id="{{machine.slug}}">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
 

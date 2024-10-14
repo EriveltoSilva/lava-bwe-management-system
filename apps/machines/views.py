@@ -13,6 +13,44 @@ from .models import Machine, MachineState
 NUMBER_OF_MACHINE = 15
 
 
+class EditMachineStateView(View):
+    """view for RegisterMachine"""
+
+    template_name = "machines/edit-state.html"
+    form_class = MachineStateForm
+
+    def get_object(self, *args, **kwargs):
+        """get machine object"""
+        mid = self.kwargs.get("mid")
+        return MachineState.objects.get(mid=mid)
+
+    def get(self, request, *args, **kwargs):
+        """render form for register new machine state"""
+        machine_state = self.get_object(*args, **kwargs)
+        form = self.form_class(instance=machine_state, data=request.session.get("edit_machine_state_form_data", None))
+        return render(
+            request, self.template_name, {"form": form, "menu_page": "machines", "sub_page": "register-state"}
+        )
+
+    def post(self, request, *args, **kwargs):
+        """post data for register new machine state"""
+        machine_state = self.get_object(*args, **kwargs)
+        request.session["edit_machine_state_form_data"] = request.POST
+        form = self.form_class(instance=machine_state, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Estado editado com sucesso!")
+            del request.session["edit_machine_state_form_data"]
+        else:
+            messages.error(request, "Formulário com dados inválidos!")
+
+        previous_page = request.META.get("HTTP_REFERER")
+        return HttpResponseRedirect(previous_page or "")
+
+
+edit_machine_state = EditMachineStateView.as_view()
+
+
 class RegisterMachineStateView(View):
     """view for RegisterMachine"""
 
@@ -69,7 +107,7 @@ delete_machine_states = DeleteMachineStateView.as_view()
 class ListStateMachine(View):
     """View for list machine states"""
 
-    template_name = "machines/state_list.html"
+    template_name = "machines/list-state.html"
 
     def get(self, request, *args, **kwargs):
         """list machines state"""

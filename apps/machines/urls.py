@@ -15,5 +15,6 @@ urlpatterns = [
     #
     path("estados-de-maquinas/novo-estado", views.register_state, name="register-state"),
     path("estados-de-maquinas/deletar/<uuid:mid>", views.delete_machine_states, name="delete-state"),
+    path("estados-de-maquinas/editar/<uuid:mid>", views.edit_machine_state, name="edit-state"),
     path("estados-de-maquinas", views.list_states, name="list-states"),
 ]
