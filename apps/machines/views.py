@@ -46,10 +46,11 @@ class ListMachineView(View):
 
     def get(self, request, *args, **kwargs):
         """list machines"""
-        list_machines = self.get_filter_machines(request)
         number_active_machines = Machine.objects.filter(state__name__icontains="activo").count()
+        list_machines = self.get_filter_machines(request)
 
         total_machines = len(list_machines)
+
         paginator = Paginator(list_machines, NUMBER_OF_MACHINE)
         page = request.GET.get("page")
         machines = paginator.get_page(page)
@@ -77,17 +78,20 @@ class EditMachineView(View):
     template_name = "machines/edit.html"
     form_class = MachineForm
 
+    def get_object(self, *args, **kwargs):
+        """get machine object"""
+        slug = self.kwargs.get("slug")
+        return Machine.objects.get(slug=slug)
+
     def get(self, request, *args, **kwargs):
         """edit a machine"""
-        slug = self.request.kwargs.get("slug")
-        machine = Machine.objects.get(slug=slug)
+        machine = self.get_object(*args, **kwargs)
         form = self.form_class(data=request.session.get("machine_form_data", None), instance=machine)
         return render(request, self.template_name, {"form": form, "menu_page": "machines", "sub_page": "edit"})
 
     def post(self, request, *args, **kwargs):
         """edit a machine post data"""
-        slug = self.kwargs.get("slug")
-        machine = Machine.objects.get(slug=slug)
+        machine = self.get_object(*args, **kwargs)
         request.session["machine_form_data"] = request.POST
         form = self.form_class(data=request.POST, instance=machine)
 
