@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metas %}
+<meta content="Máquinas, Lavar" name="keywords">
+<meta content="Máquina de Lavar" name="description">
+{% endblock %}
+{% block title %} Lista de Estados de Máquina{% endblock %}
+
+{% block local_style %}
+{% endblock %}
+
+{% block content %}
+
+<!-- machine_states list Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h3 class="mb-0">Estados</h3>
+            <a href="{% url 'machines:register-state' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                Cadastrar Estado
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Nome</th>
+                        <th scope="col">Acções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for state in machine_states %}
+                    <tr>
+                        <td>{{ state.name}}</td>
+                        <td>
+                            {% comment %}
+                            <span title="Detalhes" class="btn btn-primary mt-1" onclick="showDetails('{{machine.mid}}')" id="{{machine.mid}}" >
+                                <i class="bi bi-eye-fill"></i>
+                            </span>
+                            {% endcomment %}
+
+                            <a title="Editar" href="" class="btn btn-primary mt-1" id="{{machine.slug}}">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deletar{{state.mid}}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                            {% include 'machines/partials/_modal_delete_state_machine.html' %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan=5>
+                            <p>Não há estados registradas</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="clearfix">
+                <div class="hint-text">Mostrando <b>{{machine_states.number }}</b> de <b>{{ machine_states.paginator.num_pages}}
+
+                    </b>
+                </div>
+                <ul class="pagination">
+                    {% if machine_states.has_previous %}
+                    <li class="page-item "><a href="?page={{ machine_states.previous_page_number }}"
+                            class="page-link">Anterior</a></li>
+                    {% endif %}
+
+                    {% for num_page in machine_states.paginator.page_range %}
+
+                    <li class="page-item {% if num_page == machine_states.number %}active{% endif %}">
+                        <a href="?page={{ num_page }}" class="page-link">{{ num_page }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if machine_states.has_next %}
+                    <li class="page-item ">
+                        <a href="?page={{ machine_states.next_page_number }}" class="page-link">
+                            Próximo
+                        </a>
+                    </li>
+                    <li class="page-item ">
+                        <a href="?page={{ machine_states.paginator.num_pages }}" class="page-link">Última &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- machine_states list End -->
+
+
+{% endblock %}
+
+{% block local_script %}
+<script src="{% static 'assets/machine_states/js/list.js' %}"></script>
+{% endblock%}

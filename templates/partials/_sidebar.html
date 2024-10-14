@@ -47,8 +47,10 @@
 					Gerir de Máquinas
 				</a>
 				<div class="dropdown-menu bg-transparent border-0">
+					<a href="{% url 'machines:list-states' %}" class="dropdown-item {% if sub_page == 'state_list' %}active{% endif %}">Estados</a>
+                    <hr />
 					<a href="{% url 'machines:register' %}" class="dropdown-item {% if sub_page == 'register' %}active{% endif %}">Cadastar Máquina</a>
-					<a href="{% url 'machines:list' %}" class="dropdown-item {% if sub_page == 'list' %}active{% endif %}">Máquinas</a>
+					<a href="{% url 'machines:list' %}" class="dropdown-item {% if sub_page == 'list' %}active{% endif %}">Lista Máquinas</a>
 				</div>
 			</div>
             {% endif %}
