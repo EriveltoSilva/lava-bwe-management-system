@@ -11,4 +11,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views_machines.dashboard, name="dashboard"),
     path("accounts/", include("apps.accounts.urls")),
+    path("maquinas/", include("apps.machines.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

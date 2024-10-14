@@ -40,38 +40,17 @@
 			</div>
 			{% endif %}
 
-			{% comment %}
-			{% if request.user.employee.area.name == 'IT' or request.user.is_superuser %}
+            {% if request.user.is_superuser %}
 			<div class="nav-item dropdown">
-				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'it_material_req' %}active{% endif %}" data-bs-toggle="dropdown">
-					<i class="bi bi-stickies-fill"></i>
-					Requisições
-				</a>
-				<div class="dropdown-menu bg-transparent border-0">
-					<a href="{% url 'create-material-req' %}" class="dropdown-item {% if sub_page == 'create_material_req' %}active{% endif %}">Solicitar Material</a>
-					<a href="{% url 'list-material-req' %}" class="dropdown-item {% if sub_page == 'list_material_req' %}active{% endif %}">Lista Solicitações de Materias</a>
-					<a href="{% url 'dashboard-material-req' %}" class="nav-item nav-link {% if menu_page == 'dashboard_material_req' %}active{% endif %}">Dashboard</a>
-				</div>
-			</div>
-			{% endif %}
-			{% endcomment %}
-
-			<div class="nav-item dropdown">
-				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'room_reservation' %}active{% endif %}" data-bs-toggle="dropdown">
-					<i class="bi bi-door-open me-1"></i>
+				<a href="#" class="nav-link dropdown-toggle {% if menu_page == 'machines' %}active{% endif %}" data-bs-toggle="dropdown">
+                    <i class="bi bi-archive me-1"></i>
 					Gerir de Máquinas
 				</a>
 				<div class="dropdown-menu bg-transparent border-0">
-					{% if request.user.is_superuser %}
-					<a href="" class="dropdown-item {% if sub_page == 'room_list' %}active{% endif %}">Listar Salas</a>
-					<a href="" class="dropdown-item {% if sub_page == 'room_register' %}active{% endif %}">Registrar Sala</a>
-					<hr>
-					{% endif %}
-					<a href="" class="dropdown-item {% if sub_page == 'reservation_list' %}active{% endif %}">Listar Reservas</a>
-					<a href="" class="dropdown-item {% if sub_page == 'reservation_register' %}active{% endif %}" >Reservar Sala</a>
-					<a href="" class="dropdown-item {% if sub_page == 'reservation_dashboard' %}active{% endif %}">Dashboad Estatistica</a>
+					<a href="{% url 'machines:register' %}" class="dropdown-item {% if sub_page == 'register' %}active{% endif %}">Cadastar Máquina</a>
 				</div>
 			</div>
+            {% endif %}
 
 		</div>
 	</nav>

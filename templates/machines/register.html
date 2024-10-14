@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metas%}
+<meta content="Nova máquina" name="keywords">
+<meta content="Registo de nova máquina" name="description">
+{% endblock %}
+
+
+{% block title %}
+Nova máquina
+{% endblock %}
+
+{% block local_style %}
+{% endblock %}
+
+{% block content %}
+<!-- Sign Up Start -->
+<div class="container-fluid row align-items-center justify-content-center">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-sm-6 col-12">
+            <img src="{% static 'assets/geral/img/machine.png' %}" alt="Máquina de lavar" class="w-100 h-100" />
+        </div>
+        <div class="col-sm-6 col-12">
+            <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                <div class="">
+                    <h2>Nova máquina</h2>
+                    <p class="text-secondary">Uma nova máquina? Fantástico!</p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-floating mt-3">
+                        {% include 'partials/_alerts.html' %}
+                    </div>
+
+                    <div class="row">
+                        {% for field in form.visible_fields %}
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="form-floating mb-3">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}"> {{ field.label }}</label>
+                            </div>
+                            <div class="w-100">
+                                {% for error in field.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary py-3 w-100 my-4">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sign Up End -->
+
+{% endblock %}
+
+{% block local_script %}
+{% endblock%}
+
+
+
