@@ -1,6 +1,8 @@
 """views for machines """
 
-from django.shortcuts import redirect, render
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.views import View
 
 from .forms import MachineForm
@@ -22,9 +24,15 @@ class RegisterMachinesView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             # save form data
-            form.save()
-            return redirect("machines:dashboard")
-        return render(request, self.template_name, {"form": form})
+            machine = form.save(commit=False)
+            machine.created_by = request.user
+            machine.save()
+            messages.success(request, "Máquina registada com sucesso!")
+        else:
+            messages.error(request, "Usuário não encontrado!")
+
+        previous_page = request.META.get("HTTP_REFERER")
+        return HttpResponseRedirect(previous_page or "")
 
 
 register = RegisterMachinesView.as_view()
