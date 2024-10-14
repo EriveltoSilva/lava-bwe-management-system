@@ -9,6 +9,7 @@ app_name = "machines"
 urlpatterns = [
     path("nova-maquina/", views.register, name="register"),
     path("editar-maquina/<slug:slug>", views.edit, name="edit"),
+    path("deletar-maquina/<slug:slug>", views.delete, name="delete"),
     path("lista-de-maquinas", views.list_machine, name="list"),
     path("detalhes/<slug:slug>", views.details, name="details-json"),
 ]

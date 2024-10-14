@@ -3,7 +3,8 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views import View
 
 from .forms import MachineForm
@@ -70,6 +71,28 @@ class ListMachineView(View):
 
 
 list_machine = ListMachineView.as_view()
+
+
+class DeleteMachineView(View):
+    """View for delete machines"""
+
+    def get_object(self, *args, **kwargs):
+        """get machine object"""
+        slug = self.kwargs.get("slug")
+        return Machine.objects.get(slug=slug)
+
+    def post(self, request, *args, **kwargs):
+        """delete a machine"""
+        try:
+            machine = self.get_object(*args, **kwargs)
+            machine.delete()
+            messages.success(request, "Máquina deletada com sucesso!")
+        except Machine.DoesNotExist as e:
+            messages.error(request, f"Máquina não encontrada: {e}")
+        return redirect(request.META.get("HTTP_REFERER") or "")
+
+
+delete = DeleteMachineView.as_view()
 
 
 class EditMachineView(View):

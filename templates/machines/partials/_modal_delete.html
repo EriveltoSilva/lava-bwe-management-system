@@ -1,0 +1,19 @@
+<!-- Modal -->
+<div class="modal fade" id="deletar{{machine.mid}}" tabindex="-1" aria-labelledby="deletar{{machine.mid}}Label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark" id="deletar{{machine.mid}}Label">Deletar Máquinas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Tens a certeza de que sejas eliminar a máquina "{{machine.name}}"?
+        </div>
+        <form action="{% url 'machines:delete' machine.slug %}" method="post" class="modal-footer">
+            {% csrf_token %}
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CAncelar</button>
+          <button type="submit" class="btn btn-danger">Deletar</button>
+        </form>
+      </div>
+    </div>
+  </div>
