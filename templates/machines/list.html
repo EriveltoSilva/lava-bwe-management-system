@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metas %}
+<meta content="Máquinas, Lavar" name="keywords">
+<meta content="Máquina de Lavar" name="description">
+{% endblock %}
+{% block title %} Lista de Máquinas{% endblock %}
+
+{% block local_style %}
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Sale & Revenue Start -->
+<div class="container-fluid pt-4 px-4">
+    {% if filter_name %}
+    <h1>Lista de Máquinas - {{ filter_name }}</h1>
+    {% else%}
+    <h1>Lista de Máquinas </h1>
+    {% endif %}
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <img class="rounded-circle" src="{% static 'assets/room_reservation/img/total_reservas.png' %}" style="width: 80px; height: 80px;">
+                <div class="ms-3">
+                    <p class="mb-2">Nº de máquinas</p>
+                    <h6 class="mb-0">{{ total_machines }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <img class="rounded-circle" src="{% static 'assets/room_reservation/img/reservas_deste_mes.png' %}" style="width: 80px; height: 80px;">
+                <div class="ms-3">
+                    <p class="mb-2">Máquinas activas</p>
+                    <h6 class="mb-0">{{number_active_machines}}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sale & Revenue End -->
+
+<!-- Form Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12 col-md-7 col-xl-7">
+            {% include 'partials/_alerts.html' %}
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Filtrar pelo estado:</h6>
+
+                <form method="get" class="form-inline d-flex gap-3">
+                    <select class="form-select w-75" aria-label="Default select example" name="state">
+                        <optgroup label="Estados">
+                            <option value="" {% if not request.GET.state  %}selected{% endif %}>Todas</option>
+                            {% for state in machines_states %}
+                            <option value="{{ state.name }}" {% if request.GET.state == state.name %}selected{% endif %}>
+                                {{ state.name }}
+                            </option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-25" id="btnFilter">Filtrar</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Form End -->
+
+
+
+
+
+
+<!-- Machines list Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h3 class="mb-0">Máquinas</h3>
+            <a href="{% url 'machines:register' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                Cadastrar máquina
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Preço de compra</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Criado por</th>
+                        <th scope="col">Acções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for machine in machines %}
+                    <tr>
+                        <td><input class="form-check-input" type="checkbox"></td>
+                        <td>{{machine.id}}</td>
+                        <td>{{ machine.name}}</td>
+                        <td>{{ machine.purchase_value}}</td>
+                        <td>{{ machine.state}}</td>
+                        <td>{{ machine.created_by}}</td>
+                        <td>
+                            <span title="Detalhes" class="btn btn-primary mt-1" onclick="showDetails('{{machine.mid}}')" id="{{machine.mid}}" >
+                                <i class="bi bi-eye-fill"></i>
+                            </span>
+                            <a title="Editar" href="{% url 'machines:edit' machine.slug %}" class="btn btn-primary mt-1" id="{{machine.slug}}">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <span title="Eliminar"  class="btn btn-primary mt-1"
+                                onclick="showModalEliminate('{{machine.slug}}')" id="{{machine.slug}}" >
+                                <i class="bi bi-trash"></i>
+                            </span>
+
+                            <span title="Cancelar" class="btn btn-primary mt-1"
+                                onclick="showModalCancel('{{machine.slug}}')" id="{{machine.slug}}">
+                                <i class="bi bi-x-square"></i>
+                                Cancelar
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan=5>
+                            <p>Não há máquinas registradas</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="clearfix">
+                <div class="hint-text">Mostrando <b>{{machines.number }}</b> de <b>{{ machines.paginator.num_pages}}
+
+                    </b>
+                </div>
+                <ul class="pagination">
+                    {% if machines.has_previous %}
+                    <li class="page-item "><a href="?page={{ machines.previous_page_number }}"
+                            class="page-link">Anterior</a></li>
+                    {% endif %}
+
+                    {% for num_page in machines.paginator.page_range %}
+
+                    <li class="page-item {% if num_page == machines.number %}active{% endif %}">
+                        <a href="?page={{ num_page }}" class="page-link">{{ num_page }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if machines.has_next %}
+                    <li class="page-item ">
+                        <a href="?page={{ machines.next_page_number }}" class="page-link">
+                            Próximo
+                        </a>
+                    </li>
+                    <li class="page-item ">
+                        <a href="?page={{ machines.paginator.num_pages }}" class="page-link">Última &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Machines list End -->
+
+
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-primary" id="detailsModalLabel">Detalhes da Máquina</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-5">Agendado Por:</dt>
+                    <dd class="col-sm-7"><span id="markedBy"></span></dd>
+                </dl>
+
+                <dl class="row">
+                    <dt class="col-sm-5">Para:</dt>
+                    <dd class="col-sm-7"><span id="date"></span></dd>
+                </dl>
+
+                <dl class="row">
+                    <dt class="col-sm-5">Na Sala:</dt>
+                    <dd class="col-sm-7"><span id="room"></span></dd>
+                </dl>
+
+                <dl class="row">
+                    <dt class="col-sm-5">Estado:</dt>
+                    <dd class="col-sm-7"><span id="status"></span></dd>
+                </dl>
+
+                <dl class="row">
+                    <dt class="col-sm-5">Horário de Inicio:</dt>
+                    <dd class="col-sm-7"><span id="timeStart"></span></dd>
+                </dl>
+
+                <dl class="row">
+                    <dt class="col-sm-5">Participantes:</dt>
+                    <dd class="col-sm-7"><span id="participants"></span></dd>
+                </dl>
+
+                <dl class="row">
+                    <dt class="col-sm-5">Assunto:</dt>
+                    <dd class="col-sm-7">
+                        <p id="subject"></p>
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar Janela</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminateModal" tabindex="-1" aria-labelledby="eliminateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminateModalLabel">Deletar Máquinas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Têm a certeza de que seja mesmo eliminar esta máquina?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnEliminatemachine">Eliminar Reserva</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block local_script %}
+<script src="{% static 'assets/machines/js/list.js' %}"></script>
+{% endblock%}

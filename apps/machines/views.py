@@ -1,12 +1,74 @@
 """views for machines """
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.views import View
 
 from .forms import MachineForm
-from .models import Machine
+from .models import Machine, MachineState
+
+NUMBER_OF_MACHINE = 15
+
+
+def details(request, slug):
+    """View for edit machines"""
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "Erro. User não autenticado"})
+    if request.method == "GET":
+        print("Dados")
+        machine = get_object_or_404(Machine, slug=slug)
+        data = {
+            "name": machine.name,
+            "description": machine.description,
+            "purchase_value": machine.purchase_value,
+            "state": machine.state,
+            "created_by": machine.created_by,
+            "created_at": machine.created_at.strftime("%d/%m/%Y"),
+            "updated_at": machine.updated_at.strftime("%d/%m/%Y"),
+        }
+    else:
+        data = {}
+    return JsonResponse({"status": "success", "data": data})
+
+
+class ListMachineView(View):
+    """View for list machines"""
+
+    template_name = "machines/list.html"
+
+    def get_filter_machines(self, request):
+        """get machines filter by state"""
+        state = request.GET.get("state")
+        list_machines = Machine.objects.filter(state__name=state) if state else Machine.objects.all()
+        return list_machines
+
+    def get(self, request, *args, **kwargs):
+        """list machines"""
+        list_machines = self.get_filter_machines(request)
+        number_active_machines = Machine.objects.filter(state__name__icontains="activo").count()
+
+        total_machines = len(list_machines)
+        paginator = Paginator(list_machines, NUMBER_OF_MACHINE)
+        page = request.GET.get("page")
+        machines = paginator.get_page(page)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "machines": machines,
+                "machines_states": MachineState.objects.all(),
+                "total_machines": total_machines,
+                "number_active_machines": number_active_machines,
+                "menu_page": "machines",
+                "sub_page": "list",
+            },
+        )
+
+
+list_machine = ListMachineView.as_view()
 
 
 class EditMachineView(View):
@@ -73,4 +135,5 @@ register = RegisterMachinesView.as_view()
 
 
 def dashboard(request):
+    """Returns home page"""
     return render(request, "home.html")
